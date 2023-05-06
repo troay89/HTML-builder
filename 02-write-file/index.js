@@ -8,13 +8,13 @@ const {
 } = require('node:process');
 
 const rl = readline.createInterface({ input, output });
-const pathText = path.resolve(__dirname, 'text.txt');
+const pathText = path.join(__dirname, 'text.txt');
 const write = fs.createWriteStream(pathText);
 
-console.log('Привет ввидите сообщение!');
+console.log('Hi');
 rl.prompt();
 rl.on('line', (input) => {
-  if (input !== 'exit') {
+  if (input !== 'exit'.trim()) {
     rl.prompt();
     write.write(`${input}\n`);
   }else {
@@ -22,7 +22,6 @@ rl.on('line', (input) => {
   }
 });
 
-process.on('exit', () => console.log('Пака!'));
-
+process.on('exit', () => console.log('have a good day!'));
 
 

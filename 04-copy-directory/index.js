@@ -14,7 +14,7 @@ function copyDir(pathReade, pathWrite) {
           const pathW = `${pathWrite}\\${file.name}`;
           const input = fs.createReadStream(pathR, 'utf-8');
           const output = fs.createWriteStream(pathW);
-          input.on('data', chunk => output.write(chunk));
+          input.on('data', slice => output.write(slice));
         }else {
           const pathR = `${pathReade}\\${file.name}`;
           const pathW = `${pathWrite}\\${file.name}`;
