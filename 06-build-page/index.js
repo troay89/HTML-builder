@@ -49,5 +49,21 @@ const pathAssetsReade = `${pathTextReade}\\assets`;
 copyDir(pathAssetsReade, pathAssetsWrite);
 
 
+const readline = require('node:readline');
+let output = fs.createWriteStream(`${pathTextWrite}\\index.html`);
 
+const rl = readline.createInterface({
+  input: fs.createReadStream(`${pathTextReade}\\template.html`),
+});
+
+rl.on('line', (input) => {
+  if (input.includes('{{')){
+
+    const nameFile = input.replace('{{', '').replace('}}', '').trim();
+    const reade = fs.createReadStream(`${pathTextReade}\\components\\${nameFile}.html`, 'utf-8');
+    reade.on('data', slice => output.write(slice));
+  }else {
+    output.write(`${input}\n`);
+  }
+});
 
