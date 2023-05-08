@@ -56,14 +56,31 @@ const rl = readline.createInterface({
   input: fs.createReadStream(`${pathTextReade}\\template.html`),
 });
 
-rl.on('line', (input) => {
-  if (input.includes('{{')){
+const readTemplateHtml = () => {
+  const input = fs.createReadStream(`${pathTextReade}\\template.html`);
+  let temp = '';
+  return new Promise((resolve, _) => {
+    input.on('data', (slice) => temp += slice.toString());
+    input.on('end', () => resolve(temp));
+  });
+};
 
-    const nameFile = input.replace('{{', '').replace('}}', '').trim();
-    const reade = fs.createReadStream(`${pathTextReade}\\components\\${nameFile}.html`, 'utf-8');
-    reade.on('data', slice => output.write(slice));
-  }else {
-    output.write(`${input}\n`);
-  }
-});
+async function changeTemplate()  {
+  let tempHtml = await readTemplateHtml();
+  fs.readdir(path.join(`${pathTextReade}\\components`), (_, files) => {
+    files.forEach(file => {
+      let input = new fs.createReadStream(path.join(`${pathTextReade}\\components\\${file}`));
+      let data = '';
+      input.on('data', slice => data += slice);
+      input.on('end', () => {
+        tempHtml = tempHtml.replace(`{{${file.split('.')[0]}}}`, data);
+        const output = fs.createWriteStream(`${pathTextWrite}\\index.html`);
+        output.write(tempHtml);
+      });
+    });
+  });
 
+};
+
+changeTemplate();
+changeTemplate();
